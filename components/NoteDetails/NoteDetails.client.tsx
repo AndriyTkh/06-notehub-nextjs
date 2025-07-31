@@ -6,9 +6,8 @@ import { fetchNoteById } from '@/lib/noteHubAPI';
 import css from './NoteDetails.module.css';
 
 export default function NoteDetailsClient() {
-    const params = useParams();
-    
-  const id = params.id;
+  const idParam = useParams().id?.toString();
+  const id = typeof idParam === 'string' ? idParam : "Invalid"
 
   const {
     data: note,
