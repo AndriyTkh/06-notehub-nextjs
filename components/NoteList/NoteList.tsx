@@ -1,7 +1,8 @@
 import { useQuery, useMutation, useQueryClient, keepPreviousData } from '@tanstack/react-query';
-import { fetchNotes, deleteNote } from '../../lib/api/noteHubAPI';
+import { fetchNotes, deleteNote } from '../../lib/noteHubAPI';
 import type { FetchNotesParams, FetchNotesResponse } from '../../lib/types';
 import type { Note } from '../../lib/types';
+import Link from 'next/link';
 
 import css from './NoteList.module.css';
 
@@ -44,6 +45,7 @@ export default function NoteList({ search, page, setPageCount }: NoteListProps) 
           <p className={css.content}>{note.content}</p>
           <div className={css.footer}>
             <span className={css.tag}>{note.tag}</span>
+            <Link className={css.linkButton} href={`/notes/${note.id}`}>View details</Link>
             <button
               className={css.deleteButton}
               onClick={() => deleteMutation.mutate(note.id)}

@@ -1,7 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { authenticate } from '@/lib/api/authService'; // migrated from ../../services/authService
+import { useState } from 'react';
 import NoteList from '@/components/NoteList/NoteList';
 import SearchBox from '@/components/SearchBox/SearchBox';
 import Pagination from '@/components/Pagination/Pagination';
@@ -13,24 +12,7 @@ export default function NotesClient() {
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
   const [pageCount, setPageCount] = useState(1);
-  const [authLoading, setAuthLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
-  const email = 'your.email@example.com';
-
-  useEffect(() => {
-    async function initAuth() {
-      try {
-        await authenticate(email);
-      } catch (error) {
-        console.error('Authentication failed:', error);
-      } finally {
-        setAuthLoading(false);
-      }
-    }
-    initAuth();
-  }, []);
-
-  if (authLoading) return <p>Authenticating...</p>;
 
   return (
     <div className={styles.app}>

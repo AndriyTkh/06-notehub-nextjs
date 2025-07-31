@@ -1,13 +1,12 @@
 import axios from 'axios';
-import { getToken } from './authService';
-import type { Note, FetchNotesParams, FetchNotesResponse, CreateNoteDto } from '../types';
+import type { Note, FetchNotesParams, FetchNotesResponse, CreateNoteDto } from '../lib/types';
 
 const api = axios.create({
   baseURL: 'https://notehub-public.goit.study/api',
 });
 
 api.interceptors.request.use((config) => {
-  const token = getToken();
+  const token = process.env.NEXT_PUBLIC_NOTEHUB_TOKEN;
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
@@ -28,3 +27,9 @@ export async function deleteNote(id: string): Promise<void> {
   const res = await api.delete(`/notes/${id}`);
   return res.data;
 }
+
+export async function fetchNoteById(id: string) {
+  const res = await api.get(`/notes/${id}`);
+  return res.data;
+}
+
