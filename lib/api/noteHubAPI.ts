@@ -1,10 +1,6 @@
 import axios from 'axios';
 import { getToken } from './authService';
-import type {
-  Note,
-  FetchNotesParams,
-  FetchNotesResponse, CreateNoteDto
-} from '../types/types';
+import type { Note, FetchNotesParams, FetchNotesResponse, CreateNoteDto } from '../types';
 
 const api = axios.create({
   baseURL: 'https://notehub-public.goit.study/api',
@@ -28,9 +24,7 @@ export const createNote = async (note: CreateNoteDto): Promise<Note> => {
   return res.data;
 };
 
-
 export async function deleteNote(id: string): Promise<void> {
   const res = await api.delete(`/notes/${id}`);
   return res.data;
 }
-

@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient, keepPreviousData } from '@tanstack/react-query';
-import { fetchNotes, deleteNote } from '../../services/noteHubAPI';
-import type { FetchNotesParams, FetchNotesResponse } from '../../types/types';
-import type { Note } from '../../types/types';
+import { fetchNotes, deleteNote } from '../../lib/api/noteHubAPI';
+import type { FetchNotesParams, FetchNotesResponse } from '../../lib/types';
+import type { Note } from '../../lib/types';
 
 import css from './NoteList.module.css';
 
@@ -34,7 +34,7 @@ export default function NoteList({ search, page, setPageCount }: NoteListProps) 
 
   if (!data || data.notes.length === 0) return <p>No notes found</p>;
 
-  setPageCount(data.totalPages)
+  setPageCount(data.totalPages);
 
   return (
     <ul className={css.list}>
