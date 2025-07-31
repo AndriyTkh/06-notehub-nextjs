@@ -2,14 +2,7 @@ import { HydrationBoundary, QueryClient, dehydrate } from '@tanstack/react-query
 import { fetchNoteById } from '@/lib/noteHubAPI';
 import NoteDetailsClient from '../../../components/NoteDetails/NoteDetails.client';
 
-type SingleNotePageProps = {
-  params: {
-    id: string;
-  };
-};
-
-
-export default async function NoteDetailsPage({ params }: SingleNotePageProps) {
+export default async function NoteDetailsPage({ params }: { params: { id: string } }) {
   const queryClient = new QueryClient();
     const id = params.id;
     
