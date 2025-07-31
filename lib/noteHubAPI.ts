@@ -32,4 +32,3 @@ export async function fetchNoteById(id: string) {
   const res = await api.get(`/notes/${id}`);
   return res.data;
 }
-

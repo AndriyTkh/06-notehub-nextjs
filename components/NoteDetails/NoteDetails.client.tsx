@@ -7,7 +7,7 @@ import css from './NoteDetails.module.css';
 
 export default function NoteDetailsClient() {
   const idParam = useParams().id?.toString();
-  const id = typeof idParam === 'string' ? idParam : "Invalid"
+  const id = typeof idParam === 'string' ? idParam : 'Invalid';
 
   const {
     data: note,

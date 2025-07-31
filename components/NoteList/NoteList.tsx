@@ -45,7 +45,9 @@ export default function NoteList({ search, page, setPageCount }: NoteListProps) 
           <p className={css.content}>{note.content}</p>
           <div className={css.footer}>
             <span className={css.tag}>{note.tag}</span>
-            <Link className={css.linkButton} href={`/notes/${note.id}`}>View details</Link>
+            <Link className={css.linkButton} href={`/notes/${note.id}`}>
+              View details
+            </Link>
             <button
               className={css.deleteButton}
               onClick={() => deleteMutation.mutate(note.id)}

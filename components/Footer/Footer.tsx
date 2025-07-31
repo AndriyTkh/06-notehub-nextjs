@@ -10,8 +10,7 @@ export default function Footer() {
         <div className={styles.wrap}>
           <p>Developer: your name</p>
           <p>
-            Contact us:{' '}
-            <a href="mailto:student@notehub.app">student@notehub.app</a>
+            Contact us: <a href="mailto:student@notehub.app">student@notehub.app</a>
           </p>
         </div>
       </div>
