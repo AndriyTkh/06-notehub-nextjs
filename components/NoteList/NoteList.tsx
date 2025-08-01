@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient, keepPreviousData } from '@tanstack/react-query';
 import { fetchNotes, deleteNote } from '../../lib/noteHubAPI';
-import type { FetchNotesParams, FetchNotesResponse } from '../../lib/types';
-import type { Note } from '../../lib/types';
+import type { FetchNotesParams, FetchNotesResponse } from '../../lib/types/note';
+import type { Note } from '../../lib/types/note';
 import Link from 'next/link';
 
 import css from './NoteList.module.css';

@@ -22,3 +22,10 @@ export type CreateNoteDto = {
   content: string;
   tag?: string;
 };
+
+export type NotePageProps = {
+  params: {
+    id: string;
+  };
+};
+

@@ -3,7 +3,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import * as Yup from 'yup';
 
 import { createNote } from '../../lib/noteHubAPI';
-import type { CreateNoteDto } from '../../lib/types';
+import type { CreateNoteDto } from '../../lib/types/note';
 
 import css from './NoteForm.module.css';
 
