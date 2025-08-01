@@ -23,9 +23,4 @@ export type CreateNoteDto = {
   tag?: string;
 };
 
-export type NotePageProps = {
-  params: {
-    id: string;
-  };
-};
 
