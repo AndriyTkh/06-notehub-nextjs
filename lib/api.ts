@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { Note } from '../types/Note';
+import type { Note } from '../types/note';
 import { FetchNotesParams } from '@/types/FetchNotesParams';
 import { FetchNotesResponse } from '@/types/FetchNotesResponse';
 import { CreateNoteDto } from '@/types/CreateNoteDto';
