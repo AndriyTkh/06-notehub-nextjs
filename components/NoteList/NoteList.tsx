@@ -1,45 +1,19 @@
-import { useQuery, useMutation, useQueryClient, keepPreviousData } from '@tanstack/react-query';
-import { fetchNotes, deleteNote } from '../../lib/api';
-import type { FetchNotesParams, FetchNotesResponse } from '../../types/note';
-import type { Note } from '../../types/note';
+import type { Note } from '@/types/Note';
 import Link from 'next/link';
-
 import css from './NoteList.module.css';
 
-interface NoteListProps {
-  search: string;
-  page: number;
-  setPageCount: (selected: number) => void;
-}
+type NoteListProps = {
+  notes: Note[];
+  onDelete: (id: string) => void;
+  isDeletingId: string | null;
+};
 
-export default function NoteList({ search, page, setPageCount }: NoteListProps) {
-  const queryClient = useQueryClient();
-
-  const params: FetchNotesParams = { search, page, perPage: 12 };
-
-  const { data, isLoading, error } = useQuery<FetchNotesResponse>({
-    queryKey: ['notes', params],
-    queryFn: () => fetchNotes(params),
-    placeholderData: keepPreviousData,
-  });
-
-  const deleteMutation = useMutation({
-    mutationFn: deleteNote,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['notes'] });
-    },
-  });
-
-  if (isLoading) return <p>Loading notes...</p>;
-  if (error) return <p>Error loading notes</p>;
-
-  if (!data || data.notes.length === 0) return <p>No notes found</p>;
-
-  setPageCount(data.totalPages);
+export default function NoteList({ notes, onDelete, isDeletingId }: NoteListProps) {
+  if (notes.length === 0) return <p>No notes found</p>;
 
   return (
     <ul className={css.list}>
-      {data.notes.map((note: Note) => (
+      {notes.map((note) => (
         <li key={note.id} className={css.listItem}>
           <h2 className={css.title}>{note.title}</h2>
           <p className={css.content}>{note.content}</p>
@@ -50,10 +24,10 @@ export default function NoteList({ search, page, setPageCount }: NoteListProps) 
             </Link>
             <button
               className={css.deleteButton}
-              onClick={() => deleteMutation.mutate(note.id)}
-              disabled={deleteMutation.isPending}
+              onClick={() => onDelete(note.id)}
+              disabled={isDeletingId === note.id}
             >
-              {deleteMutation.isPending ? 'Deleting...' : 'Delete'}
+              {isDeletingId === note.id ? 'Deleting...' : 'Delete'}
             </button>
           </div>
         </li>

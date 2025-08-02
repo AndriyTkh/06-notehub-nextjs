@@ -13,6 +13,8 @@
     "@tanstack/react-query-devtools": "^5.83.0",
     "axios": "^1.11.0",
     "formik": "^2.4.6",
+    "lodash": "^4.17.21",
+    "lodash.debounce": "^4.0.8",
     "next": "15.4.5",
     "react": "19.1.0",
     "react-dom": "19.1.0",
@@ -21,6 +23,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@types/lodash.debounce": "^4.0.9",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

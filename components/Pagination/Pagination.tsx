@@ -1,25 +1,42 @@
-import ReactPaginate from 'react-paginate';
-import css from './Pagination.module.css';
+import styles from './Pagination.module.css';
 
-interface PaginationProps {
+type PaginationProps = {
   page: number;
-  setPage: (selected: number) => void;
+  setPage: (page: number) => void;
   pageCount: number;
-}
+};
 
 export default function Pagination({ page, setPage, pageCount }: PaginationProps) {
-  if (pageCount <= 1) return null;
+  const pages = Array.from({ length: pageCount }, (_, i) => i + 1);
+
+  const goToPage = (newPage: number) => {
+    if (newPage >= 1 && newPage <= pageCount) {
+      setPage(newPage);
+    }
+  };
 
   return (
-    <ReactPaginate
-      pageCount={pageCount}
-      forcePage={page - 1}
-      onPageChange={(selectedItem) => setPage(selectedItem.selected + 1)}
-      containerClassName={css.pagination}
-      activeClassName={css.active}
-      previousLabel={'←'}
-      nextLabel={'→'}
-      breakLabel={'...'}
-    />
+    <ul className={styles.pagination}>
+      {/* Prev Arrow */}
+      <li onClick={() => goToPage(page - 1)} className={page === 1 ? styles.disabled : ''}>
+        <a>&larr;</a>
+      </li>
+
+      {/* Page Numbers */}
+      {pages.map((p) => (
+        <li
+          key={p}
+          className={p === page ? styles.active : ''}
+          onClick={() => goToPage(p)}
+        >
+          <a>{p}</a>
+        </li>
+      ))}
+
+      {/* Next Arrow */}
+      <li onClick={() => goToPage(page + 1)} className={page === pageCount ? styles.disabled : ''}>
+        <a>&rarr;</a>
+      </li>
+    </ul>
   );
 }

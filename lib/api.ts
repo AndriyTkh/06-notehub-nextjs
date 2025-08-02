@@ -1,5 +1,8 @@
 import axios from 'axios';
-import type { Note, FetchNotesParams, FetchNotesResponse, CreateNoteDto } from '../types/note';
+import type { Note } from '../types/Note';
+import { FetchNotesParams } from '@/types/FetchNotesParams';
+import { FetchNotesResponse } from '@/types/FetchNotesResponse';
+import { CreateNoteDto } from '@/types/CreateNoteDto';
 
 const api = axios.create({
   baseURL: 'https://notehub-public.goit.study/api',
@@ -13,22 +16,26 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+// GET /notes
 export async function fetchNotes(params: FetchNotesParams): Promise<FetchNotesResponse> {
-  const res = await api.get('/notes', { params });
+  const res = await api.get<FetchNotesResponse>('/notes', { params });
   return res.data;
 }
 
-export const createNote = async (note: CreateNoteDto): Promise<Note> => {
-  const res = await api.post('/notes', note);
-  return res.data;
-};
-
-export async function deleteNote(id: string): Promise<void> {
-  const res = await api.delete(`/notes/${id}`);
+// POST /notes
+export async function createNote(note: CreateNoteDto): Promise<Note> {
+  const res = await api.post<Note>('/notes', note);
   return res.data;
 }
 
-export async function fetchNoteById(id: string) {
-  const res = await api.get(`/notes/${id}`);
+// DELETE /notes/:id
+export async function deleteNote(id: string): Promise<Note> {
+  const res = await api.delete<Note>(`/notes/${id}`);
+  return res.data;
+}
+
+// GET /notes/:id
+export async function fetchNoteById(id: string): Promise<Note> {
+  const res = await api.get<Note>(`/notes/${id}`);
   return res.data;
 }
