@@ -1,6 +1,16 @@
 import Link from 'next/link';
 import css from './NoteList.module.css';
-import { Note } from '@/types/Note';
+
+interface Note {
+  id: string;
+  title: string;
+  content: string;
+  tag: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+
 
 type NoteListProps = {
   notes: Note[];
