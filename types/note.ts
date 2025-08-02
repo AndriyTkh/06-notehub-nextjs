@@ -5,6 +5,4 @@ export interface Note {
   tag: string;
   createdAt: string;
   updatedAt: string;
-};
-
-
+}

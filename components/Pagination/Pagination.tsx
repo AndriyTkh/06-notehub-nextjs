@@ -24,11 +24,7 @@ export default function Pagination({ page, setPage, pageCount }: PaginationProps
 
       {/* Page Numbers */}
       {pages.map((p) => (
-        <li
-          key={p}
-          className={p === page ? styles.active : ''}
-          onClick={() => goToPage(p)}
-        >
+        <li key={p} className={p === page ? styles.active : ''} onClick={() => goToPage(p)}>
           <a>{p}</a>
         </li>
       ))}

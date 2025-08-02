@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient, keepPreviousData } from '@tanstack/react-query';
 import debounce from 'lodash.debounce';
 
@@ -20,21 +20,27 @@ type NotesClientProps = {
 };
 
 export default function NotesClient({ initialData }: NotesClientProps) {
-  const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
   const [showModal, setShowModal] = useState(false);
   const queryClient = useQueryClient();
 
-  const debouncedSetSearch = useMemo(() => debounce(setSearch, 300), []);
+  const [searchText, setSearchText] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
 
-  const {
-    data,
-    isLoading,
-    error,
-  } = useQuery({
-    queryKey: ['notes', { search, page }],
-    queryFn: () => fetchNotes({ search, page, perPage: 12 }),
-    initialData: page === 1 && search === '' ? initialData : undefined,
+  useEffect(() => {
+    const handler = debounce(() => {
+      setDebouncedSearch(searchText);
+    }, 300);
+
+    handler();
+
+    return () => handler.cancel();
+  }, [searchText]);
+
+  const { data, isLoading, error } = useQuery({
+    queryKey: ['notes', { search: debouncedSearch, page }],
+    queryFn: () => fetchNotes({ search: debouncedSearch, page, perPage: 12 }),
+    initialData: page === 1 && debouncedSearch === '' ? initialData : undefined,
     placeholderData: keepPreviousData,
   });
 
@@ -65,19 +71,13 @@ export default function NotesClient({ initialData }: NotesClientProps) {
           + New Note
         </button>
         <Pagination page={page} setPage={setPage} pageCount={data?.totalPages || 1} />
-        <SearchBox search={search} onSearchChange={debouncedSetSearch} />
+        <SearchBox search={searchText} onSearchChange={setSearchText} />
       </div>
 
       {isLoading && <p>Loading...</p>}
       {error && <p>Error loading notes</p>}
 
-      {data && (
-        <NoteList
-          notes={data.notes}
-          onDelete={handleDelete}
-          isDeletingId={deletingId}
-        />
-      )}
+      {data && <NoteList notes={data.notes} onDelete={handleDelete} isDeletingId={deletingId} />}
 
       {showModal && (
         <Modal onClose={() => setShowModal(false)}>
