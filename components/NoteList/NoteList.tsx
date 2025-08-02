@@ -1,6 +1,6 @@
-import { Note } from '../../types/Note'
 import Link from 'next/link';
 import css from './NoteList.module.css';
+import { Note } from '@/types/Note';
 
 type NoteListProps = {
   notes: Note[];
