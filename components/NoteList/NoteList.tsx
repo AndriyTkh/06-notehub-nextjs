@@ -1,4 +1,4 @@
-import type { Note } from '@/types/Note';
+import type { Note } from '../../types/Note'
 import Link from 'next/link';
 import css from './NoteList.module.css';
 
