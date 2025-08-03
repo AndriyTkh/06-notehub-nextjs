@@ -17,7 +17,7 @@ import styles from './page.module.css';
 
 interface NotesClientProps {
   initialData: FetchNotesResponse;
-};
+}
 
 export default function NotesClient({ initialData }: NotesClientProps) {
   const [page, setPage] = useState(1);
@@ -25,7 +25,6 @@ export default function NotesClient({ initialData }: NotesClientProps) {
   const [searchText, setSearchText] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
 
-  // Debounce only for fetching
   const debouncedUpdate = useMemo(
     () => debounce((value: string) => setDebouncedSearch(value), 300),
     []
@@ -36,7 +35,6 @@ export default function NotesClient({ initialData }: NotesClientProps) {
     return () => debouncedUpdate.cancel();
   }, [searchText, debouncedUpdate]);
 
-  // Reset page when search changes
   useEffect(() => {
     setPage(1);
   }, [searchText]);
@@ -48,33 +46,30 @@ export default function NotesClient({ initialData }: NotesClientProps) {
     placeholderData: keepPreviousData,
   });
 
+  const handleSearchChange = (value: string) => setSearchText(value);
+  const handlePageChange = (newPage: number) => setPage(newPage);
+
   return (
     <div className={styles.app}>
       <div className={styles.toolbar}>
         <button className={styles.button} onClick={() => setShowModal(true)}>
           + New Note
         </button>
+        <SearchBox onSearchChange={handleSearchChange} />
         {data?.totalPages != undefined && data.totalPages > 1 && (
-          <Pagination page={page} setPage={setPage} pageCount={data.totalPages} />
+          <Pagination currentPage={page} totalPages={data.totalPages} onPageChange={handlePageChange} />
         )}
-        <SearchBox search={searchText} onSearchChange={setSearchText} />
       </div>
 
       {isLoading && <p>Loading...</p>}
       {error && <p>Error loading notes</p>}
 
-      {data && data.notes.length === 0 ? (
-        <p>No notes found.</p>
-      ) : (
-        data && <NoteList notes={data.notes} />
-      )}
+      {data && data.notes.length > 0 && <NoteList notes={data.notes} />}
+      {data && data.notes.length === 0 && <p>No notes found.</p>}
 
       {showModal && (
         <Modal onClose={() => setShowModal(false)}>
-          <NoteForm
-            onSuccess={() => setShowModal(false)}
-            onClose={() => setShowModal(false)}
-          />
+          <NoteForm onClose={() => setShowModal(false)} />
         </Modal>
       )}
     </div>

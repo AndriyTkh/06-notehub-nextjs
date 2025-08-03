@@ -17,7 +17,9 @@ const validationSchema = Yup.object({
   content: Yup.string()
     .max(500, 'Content must be at most 500 characters')
     .notRequired(),
-  tag: Yup.string().oneOf(TAG_OPTIONS).notRequired(),
+  tag: Yup.string()
+    .oneOf(TAG_OPTIONS, 'Invalid tag')
+    .required('Tag is required'), 
 });
 
 const initialValues: CreateNoteDto = {
@@ -27,18 +29,23 @@ const initialValues: CreateNoteDto = {
 };
 
 interface NoteFormProps {
-  onSuccess?: () => void;
-  onClose?: () => void;
+  onClose: () => void;
 }
 
-export default function NoteForm({ onSuccess, onClose }: NoteFormProps) {
+export default function NoteForm({ onClose }: NoteFormProps) {
   const queryClient = useQueryClient();
 
-  const mutation = useMutation({
+  const mutation = useMutation<
+    unknown,               
+    unknown,                   
+    CreateNoteDto,             
+    { resetForm: () => void }  
+  >({
     mutationFn: createNote,
-    onSuccess: () => {
+    onSuccess: (_, __, context) => {
       queryClient.invalidateQueries({ queryKey: ['notes'] });
-      onSuccess?.();
+      context?.resetForm();
+      onClose(); 
     },
   });
 
@@ -46,10 +53,18 @@ export default function NoteForm({ onSuccess, onClose }: NoteFormProps) {
     <Formik
       initialValues={initialValues}
       validationSchema={validationSchema}
-      onSubmit={(values, { resetForm }) => {
-        mutation.mutate(values);
-        resetForm();
-      }}
+      onSubmit={(values, formikHelpers) => {
+      const { resetForm } = formikHelpers;
+
+      mutation.mutate(values, {
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: ['notes'] });
+          resetForm();   
+          onClose?.();    
+        },
+      });
+    }}
+
     >
       {({ isSubmitting }) => (
         <Form className={css.form}>
