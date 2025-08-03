@@ -1,14 +1,34 @@
+'use client';
+
 import Link from 'next/link';
+import { useState } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { deleteNote } from '@/lib/api';
 import css from './NoteList.module.css';
 import { Note } from '@/types/note';
 
-type NoteListProps = {
+interface NoteListProps {
   notes: Note[];
-  onDelete: (id: string) => void;
-  isDeletingId: string | null;
 };
 
-export default function NoteList({ notes, onDelete, isDeletingId }: NoteListProps) {
+export default function NoteList({ notes }: NoteListProps) {
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: deleteNote,
+    onMutate: (id: string) => {
+      setDeletingId(id);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['notes'] });
+      setDeletingId(null);
+    },
+    onError: () => {
+      setDeletingId(null);
+    },
+  });
+
   if (notes.length === 0) return <p>No notes found</p>;
 
   return (
@@ -24,10 +44,10 @@ export default function NoteList({ notes, onDelete, isDeletingId }: NoteListProp
             </Link>
             <button
               className={css.deleteButton}
-              onClick={() => onDelete(note.id)}
-              disabled={isDeletingId === note.id}
+              onClick={() => mutation.mutate(note.id)}
+              disabled={deletingId === note.id || mutation.isPending}
             >
-              {isDeletingId === note.id ? 'Deleting...' : 'Delete'}
+              {deletingId === note.id ? 'Deleting...' : 'Delete'}
             </button>
           </div>
         </li>

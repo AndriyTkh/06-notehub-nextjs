@@ -1,3 +1,5 @@
+'use client';
+
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import * as Yup from 'yup';
@@ -8,9 +10,14 @@ import { CreateNoteDto } from '@/types/CreateNoteDto';
 const TAG_OPTIONS = ['Work', 'Personal', 'Meeting', 'Shopping', 'Todo'];
 
 const validationSchema = Yup.object({
-  title: Yup.string().min(3).max(100).required('Title is required'),
-  content: Yup.string().min(5).required('Content is required'),
-  tag: Yup.string().oneOf(TAG_OPTIONS),
+  title: Yup.string()
+    .min(3, 'Title must be at least 3 characters')
+    .max(50, 'Title must be at most 50 characters')
+    .required('Title is required'),
+  content: Yup.string()
+    .max(500, 'Content must be at most 500 characters')
+    .notRequired(),
+  tag: Yup.string().oneOf(TAG_OPTIONS).notRequired(),
 });
 
 const initialValues: CreateNoteDto = {
@@ -19,14 +26,19 @@ const initialValues: CreateNoteDto = {
   tag: 'Todo',
 };
 
-export default function NoteForm({ onSuccess }: { onSuccess?: () => void }) {
+interface NoteFormProps {
+  onSuccess?: () => void;
+  onClose?: () => void;
+}
+
+export default function NoteForm({ onSuccess, onClose }: NoteFormProps) {
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
     mutationFn: createNote,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['notes'] });
-      onSuccess?.(); // close the modal if passed
+      onSuccess?.();
     },
   });
 
@@ -72,6 +84,13 @@ export default function NoteForm({ onSuccess }: { onSuccess?: () => void }) {
               disabled={isSubmitting || mutation.isPending}
             >
               {mutation.isPending ? 'Creating...' : 'Create Note'}
+            </button>
+            <button
+              type="button"
+              className={css.cancelButton}
+              onClick={onClose}
+            >
+              Cancel
             </button>
           </div>
         </Form>

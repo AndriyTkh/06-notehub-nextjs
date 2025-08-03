@@ -1,38 +1,36 @@
+'use client';
+
+import ReactPaginate from 'react-paginate';
 import styles from './Pagination.module.css';
 
-type PaginationProps = {
+interface PaginationProps {
   page: number;
   setPage: (page: number) => void;
   pageCount: number;
 };
 
 export default function Pagination({ page, setPage, pageCount }: PaginationProps) {
-  const pages = Array.from({ length: pageCount }, (_, i) => i + 1);
-
-  const goToPage = (newPage: number) => {
-    if (newPage >= 1 && newPage <= pageCount) {
-      setPage(newPage);
-    }
+  const handlePageChange = (selectedItem: { selected: number }) => {
+    setPage(selectedItem.selected + 1);
   };
 
   return (
-    <ul className={styles.pagination}>
-      {/* Prev Arrow */}
-      <li onClick={() => goToPage(page - 1)} className={page === 1 ? styles.disabled : ''}>
-        <a>&larr;</a>
-      </li>
-
-      {/* Page Numbers */}
-      {pages.map((p) => (
-        <li key={p} className={p === page ? styles.active : ''} onClick={() => goToPage(p)}>
-          <a>{p}</a>
-        </li>
-      ))}
-
-      {/* Next Arrow */}
-      <li onClick={() => goToPage(page + 1)} className={page === pageCount ? styles.disabled : ''}>
-        <a>&rarr;</a>
-      </li>
-    </ul>
+    <ReactPaginate
+      breakLabel="..."
+      nextLabel="→"
+      onPageChange={handlePageChange}
+      pageRangeDisplayed={3}
+      marginPagesDisplayed={1}
+      pageCount={pageCount}
+      forcePage={page - 1} // convert to 0-based
+      previousLabel="←"
+      containerClassName={styles.pagination}
+      activeClassName={styles.active}
+      disabledClassName={styles.disabled}
+      pageClassName={styles.page}
+      previousClassName={styles.prev}
+      nextClassName={styles.next}
+      breakClassName={styles.break}
+    />
   );
 }
